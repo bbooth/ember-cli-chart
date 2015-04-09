@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import ChartDataUpdater from 'ember-cli-chart/chart-data-updater';
 /* global Chart */
 
 export default Ember.Component.extend({
@@ -31,13 +30,7 @@ export default Ember.Component.extend({
   }.on('willDestroyElement'),
 
   updateChart: function(){
-    var chart = this.get('chart');
-    var data = this.get('data');
-    var needUpdate = ChartDataUpdater.create({
-      data: data,
-      chart: chart
-    }).updateByType();
-
-    if (needUpdate) { chart.update(); }
+    this.destroyChart();
+    this.renderChart();
   }.observes('data', 'data.[]', 'options')
 });
