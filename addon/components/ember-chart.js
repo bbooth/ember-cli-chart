@@ -5,32 +5,50 @@ export default Ember.Component.extend({
   tagName: 'canvas',
   attributeBindings: ['width', 'height'],
 
-  renderChart: function(){
+  didInsertElement: function(){
     var context = this.get('element').getContext('2d');
     var data = this.get('data');
-    var type = this.get('type').classify();
+    var type = Ember.String.classify(this.get('type'));
     var options = Ember.merge({}, this.get('options'));
 
     var chart = new Chart(context)[type](data, options);
 
     if (this.get('legend')) {
       var legend = chart.generateLegend();
+      this.$().wrap("<div class='chart-parent'></div>");
       this.$().parent().append(legend);
     }
 
     this.set('chart', chart);
-  }.on('didInsertElement'),
+    this.addObserver('data', this, this.updateChart);
+    this.addObserver('data.[]', this, this.updateChart);
+    this.addObserver('options', this, this.updateChart);
+  },
 
-  destroyChart: function(){
+  willDestroyElement: function(){
     if (this.get('legend')) {
       this.$().parent().children('[class$=legend]').remove();
     }
 
     this.get('chart').destroy();
-  }.on('willDestroyElement'),
+    this.removeObserver('data', this, this.updateChart);
+    this.removeObserver('data.[]', this, this.updateChart);
+    this.removeObserver('options', this, this.updateChart);
+  },
 
   updateChart: function(){
-    this.destroyChart();
-    this.renderChart();
-  }.observes('data', 'data.[]', 'options')
+    var chart = this.get('chart');
+    var data = this.get('data');
+    var redraw = ChartDataUpdater.create({
+      data: data,
+      chart: chart
+    }).updateByType();
+
+    if (true) {
+      this.willDestroyElement();
+      this.didInsertElement();
+    } else {
+      chart.update();
+    }
+  }
 });
