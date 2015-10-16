@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import ChartDataUpdater from 'ember-cli-chart/chart-data-updater'
+import ChartDataUpdater from 'ember-cli-chart/chart-data-updater';
 /* global Chart */
 
 export default Ember.Component.extend({
@@ -51,7 +51,7 @@ export default Ember.Component.extend({
     } else {
       chart.update();
     }
-    
+
     if (this.get('legend')) {
       this.$().parent().children('[class$=legend]').remove();
       var legend = chart.generateLegend();
