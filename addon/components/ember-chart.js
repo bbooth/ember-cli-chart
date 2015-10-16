@@ -37,6 +37,10 @@ export default Ember.Component.extend({
     this.removeObserver('options', this, this.updateChart);
   },
 
+  typeChanged: Ember.observer('type', function() {
+    this.updateChart();
+  }),
+
   updateChart: function(){
     var chart = this.get('chart');
     var data = this.get('data');
