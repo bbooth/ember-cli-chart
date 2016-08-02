@@ -41,6 +41,10 @@ export default Ember.Component.extend({
     this.updateChart();
   }),
 
+  optionsChanged: Ember.observer('options', function() {
+    this.updateChart();
+  }),
+
   updateChart: function(){
     var chart = this.get('chart');
     var data = this.get('data');
