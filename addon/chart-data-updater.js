@@ -31,18 +31,24 @@ export default Ember.Object.extend({
     datasets.forEach(function(dataset, i) {
       var chartDataset = chart.datasets[i];
 
-      try {
-        dataset.data.forEach(function(item, j) {
-          item = item || 0;
-          if(typeof chartDataset.bars !== 'undefined') {
-            chartDataset.bars[j].value = item;
-          } else {
-            chartDataset.points[j].value = item;
+      if(typeof chartDataset !== 'undefined') {
+        try {
+          dataset.data.forEach(function(item, j) {
+            item = item || 0;
+            if (typeof chartDataset.bars !== 'undefined') {
+              chartDataset.bars[j].value = item;
+            } else {
+              chartDataset.points[j].value = item;
+            }
+          });
+        } catch (e) {
+          if (e instanceof TypeError) {
+            self.set('redraw', true);
           }
-        });
-      } catch (e) {
-        if (e instanceof TypeError) { self.set('redraw', true); }
-        else { console.error(e); }
+          else {
+            console.error(e);
+          }
+        }
       }
     });
 
