@@ -2,15 +2,19 @@ import Ember from 'ember';
 
 export default Ember.Object.extend({
   redraw: false,
-  updateByType: function () {
+  updateByType: function() {
     var data = this.get('data');
 
-    if (data.datasets) {return this.updateLinearCharts();}
-    if (Array.isArray(data)) {return this.updatePieCharts();}
+    if (data.datasets) {
+      return this.updateLinearCharts();
+    }
+    if (Array.isArray(data)) {
+      return this.updatePieCharts();
+    }
     return this.get('redraw');
   },
 
-  updateLinearCharts: function () {
+  updateLinearCharts: function() {
     var datasets = this.get('data').datasets;
     var labels = this.get('data').labels;
     var chart = this.get('chart');
@@ -24,38 +28,40 @@ export default Ember.Object.extend({
       }
     }
 
-    // Update Labels
-    chart.scale.xLabels = labels;
+    if (typeof chart.scale !== 'undefined') {
+      // Update Labels
+      chart.scale.xLabels = labels;
 
-    // Update dataset
-    datasets.forEach(function(dataset, i) {
-      var chartDataset = chart.datasets[i];
+      // Update dataset
+      datasets.forEach(function(dataset, i) {
+        var chartDataset = chart.datasets[i];
 
-      if(typeof chartDataset !== 'undefined') {
-        try {
-          dataset.data.forEach(function(item, j) {
-            item = item || 0;
-            if (typeof chartDataset.bars !== 'undefined') {
-              chartDataset.bars[j].value = item;
-            } else {
-              chartDataset.points[j].value = item;
+        if (typeof chartDataset !== 'undefined') {
+          try {
+            dataset.data.forEach(function(item, j) {
+              item = item || 0;
+              if (typeof chartDataset.bars !== 'undefined') {
+                chartDataset.bars[j].value = item;
+              } else {
+                chartDataset.points[j].value = item;
+              }
+            });
+          } catch (e) {
+            if (e instanceof TypeError) {
+              self.set('redraw', true);
             }
-          });
-        } catch (e) {
-          if (e instanceof TypeError) {
-            self.set('redraw', true);
-          }
-          else {
-            console.error(e);
+            else {
+              console.error(e);
+            }
           }
         }
-      }
-    });
+      });
+    }
 
     return this.get('redraw');
   },
 
-  updatePieCharts: function () {
+  updatePieCharts: function() {
     var data = Ember.A(this.get('data'));
     var chart = this.get('chart');
     var chartSegments = Ember.A(chart.segments);
