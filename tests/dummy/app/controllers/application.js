@@ -1,10 +1,11 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import Controller from '@ember/controller';
 
-export default Ember.Controller.extend({
+export default Controller.extend({
   pieValue1: 300,
   pieValue2: 50,
   pieValue3: 100,
-  pieData: Ember.computed('pieValue1', 'pieValue2', 'pieValue3', function(){
+  pieData: computed('pieValue1', 'pieValue2', 'pieValue3', function(){
     return [
       {
         value: parseInt(this.get('pieValue1')),
@@ -28,7 +29,7 @@ export default Ember.Controller.extend({
   }),
   lineValue1: 65,
   lineValue2: 59,
-  lineData: Ember.computed('lineValue1', 'lineValue2', function(){
+  lineData: computed('lineValue1', 'lineValue2', function(){
     return {
         labels: ["January", "February", "March", "April", "May", "June", "July"],
         datasets: [

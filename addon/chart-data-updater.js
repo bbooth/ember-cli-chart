@@ -1,6 +1,7 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
+import EmberObject from '@ember/object';
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
   redraw: false,
   updateByType: function() {
     var data = this.get('data');
@@ -62,9 +63,9 @@ export default Ember.Object.extend({
   },
 
   updatePieCharts: function() {
-    var data = Ember.A(this.get('data'));
+    var data = A(this.get('data'));
     var chart = this.get('chart');
-    var chartSegments = Ember.A(chart.segments);
+    var chartSegments = A(chart.segments);
 
     chart.segments.forEach(function(segment, i) {
       var updatedSegment = data.findBy('label', segment.label);

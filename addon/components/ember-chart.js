@@ -1,16 +1,19 @@
-import Ember from 'ember';
+import { observer } from '@ember/object';
+import { merge } from '@ember/polyfills';
+import { classify } from '@ember/string';
+import Component from '@ember/component';
 import ChartDataUpdater from 'ember-cli-chart/chart-data-updater';
 /* global Chart */
 
-export default Ember.Component.extend({
+export default Component.extend({
   tagName: 'canvas',
   attributeBindings: ['width', 'height'],
 
   didInsertElement: function(){
     var context = this.get('element').getContext('2d');
     var data = this.get('data');
-    var type = Ember.String.classify(this.get('type'));
-    var options = Ember.merge({}, this.get('options'));
+    var type = classify(this.get('type'));
+    var options = merge({}, this.get('options'));
 
     var chart = new Chart(context)[type](data, options);
 
@@ -37,11 +40,11 @@ export default Ember.Component.extend({
     this.removeObserver('options', this, this.updateChart);
   },
 
-  typeChanged: Ember.observer('type', function() {
+  typeChanged: observer('type', function() {
     this.updateChart();
   }),
 
-  optionsChanged: Ember.observer('options', function() {
+  optionsChanged: observer('options', function() {
     this.updateChart();
   }),
 
